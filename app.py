@@ -315,6 +315,7 @@ def home():
         strategy_chart=strategy_chart,
         total_trades=total_trades,
         risk_rating=risk_rating,
+        previous_profit=previous_profit,
     )
 
 if __name__ == "__main__":
