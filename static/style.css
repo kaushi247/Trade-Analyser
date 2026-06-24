@@ -65,7 +65,15 @@ form{
     font-weight:700;
     margin-bottom:10px;
 }
+.row {
+    margin-bottom: 20px;
+}
 
+.stat-card {
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+}
 .footer-links{
     margin:15px 0;
 }
