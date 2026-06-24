@@ -22,6 +22,12 @@ def home():
     sector_chart = None
     best_strategy = None
     worst_strategy = None
+    profit_factor = None
+    strategy_chart = None
+    previous_profit = None
+    total_trades = None
+    risk_rating = None
+    improvement = None
 
     if request.method == 'POST':
 
@@ -30,16 +36,56 @@ def home():
 
         if file:
 
-            df = pd.read_csv(file)
+            try:
+                df = pd.read_csv(file)
+
+            except Exception:
+
+                return render_template(
+                    "index.html",
+                    chat_response="Invalid CSV uploaded."
+            )
+            
+            required_columns = [
+                "Stock",
+                "Sector",
+                "Strategy",
+                "BuyPrice",
+                "SellPrice",
+                "Quantity",
+                "HoldingHours"
+            ]
+
+        for col in required_columns:
+
+            if col not in df.columns:
+
+                return render_template(
+                    "index.html",
+                    chat_response=f"Missing column: {col}"
+                )
 
             # Calculate profit
             df['Profit'] = (
                 (df['SellPrice'] - df['BuyPrice'])
                 * df['Quantity']
             )
-
+            total_trades = len(df)
             # Total Profit
             total_profit = df['Profit'].sum()
+            winning_profit = df[df['Profit'] > 0]['Profit'].sum()
+
+            losing_profit = abs(
+                df[df['Profit'] < 0]['Profit'].sum()
+            )
+
+            if losing_profit > 0:
+                profit_factor = round(
+                    winning_profit / losing_profit,
+                    2
+                )
+            else:
+                profit_factor = "Infinity"
             previous_profit = 1800
 
             improvement = round(
@@ -51,6 +97,15 @@ def home():
             win_rate = (
                 (df['Profit'] > 0).mean()
             ) * 100
+            
+            if win_rate >= 70:
+                risk_rating = "Low Risk ✅"
+
+            elif win_rate >= 50:
+                risk_rating = "Moderate Risk ⚠️"
+
+            else:
+                risk_rating = "High Risk 🔴"
             
             avg_holding = round(
                     df['HoldingHours'].mean(),
@@ -179,43 +234,50 @@ def home():
                 f"{worst_strategy_name} "
                 f"(₹{worst_strategy_profit})"
             )
+            fig2 = px.pie(
+                values=strategy_profit.values,
+                names=strategy_profit.index,
+                title="Profit Distribution by Strategy"
+            )
+
+            strategy_chart = fig2.to_html(
+                full_html=False
+            )
 
             # Companion Chat
 
             if question:
 
-                if "lose" in question.lower():
+                q = question.lower()
+
+                if "lose" in q:
 
                     chat_response = (
-                        f"Most losses came from "
-                        f"{worst_sector_name} sector. "
-                        f"You are also holding losing trades "
-                        f"longer than winning trades."
+                        f"Most losses came from {worst_sector_name} sector."
                     )
 
-                elif "best" in question.lower():
+                elif "best sector" in q:
 
                     chat_response = (
-                        f"Your strongest sector is "
-                        f"{best_sector_name}. "
-                        f"Your strongest strategy is "
-                        f"{best_strategy_name}."
+                        f"Your best sector is {best_sector_name}."
                     )
 
-                elif "strategy" in question.lower():
+                elif "best strategy" in q:
 
                     chat_response = (
-                        f"Your best strategy is "
-                        f"{best_strategy_name} "
-                        f"with profit ₹{best_strategy_profit}."
+                        f"Your best strategy is {best_strategy_name}."
+                    )
+
+                elif "improve" in q:
+
+                    chat_response = (
+                        "Reduce exposure to losing sectors and cut losing trades earlier."
                     )
 
                 else:
 
                     chat_response = (
-                        "Review your risk management and "
-                        "focus on sectors and strategies "
-                        "where you perform best."
+                        "Focus on profitable sectors and maintain discipline."
                     )
             # Best Stock
             best_row = df.loc[df['Profit'].idxmax()]
@@ -248,8 +310,11 @@ def home():
         sector_chart=sector_chart,
         best_strategy=best_strategy,
         worst_strategy=worst_strategy,
-        previous_profit=previous_profit,
         improvement=improvement,
+        profit_factor=profit_factor,
+        strategy_chart=strategy_chart,
+        total_trades=total_trades,
+        risk_rating=risk_rating,
     )
 
 if __name__ == "__main__":
