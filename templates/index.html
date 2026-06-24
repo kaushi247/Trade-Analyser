@@ -98,6 +98,49 @@
         </div>
 
     </div>
+    {% if health_score %}
+
+    <div class="col-md-12">
+
+        <div class="card health-card">
+
+            <h2>🏥 Trading Health Score</h2>
+
+            <div class="health-score">
+
+                {{ health_score.overall }}/100
+
+            </div>
+
+            <div class="row mt-4">
+
+                <div class="col-md-3">
+                    <h5>Discipline</h5>
+                    <p>{{ health_score.discipline }}/100</p>
+                </div>
+
+                <div class="col-md-3">
+                    <h5>Risk Mgmt</h5>
+                    <p>{{ health_score.risk_management }}/100</p>
+                </div>
+
+                <div class="col-md-3">
+                    <h5>Patience</h5>
+                    <p>{{ health_score.patience }}/100</p>
+                </div>
+
+                <div class="col-md-3">
+                    <h5>Consistency</h5>
+                    <p>{{ health_score.consistency }}/100</p>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
     <div class="col-md-6">
         <div class="card stat-card">
@@ -138,12 +181,6 @@
         </div>
     </div>
 
-    <div class="col-md-12">
-        <div class="card stat-card">
-            <h3>🧠 Behaviour Analysis</h3>
-            <h4>{{ behaviour_message }}</h4>
-        </div>
-    </div>
 
 </div>
 
@@ -236,6 +273,43 @@
         <p>{{ chat_response }}</p>
 
     </div>
+
+    {% endif %}
+
+</div>
+
+<div class="card stat-card mt-4">
+
+    <h2 class="section-title">🧠 Behavioral Finance Insights</h2>
+    <p class="section-subtitle">
+    AI-detected trading habits and psychological patterns.
+    </p>
+
+    {% if behavior_results %}
+
+    <div class="behavior-grid">
+
+        {% for key, value in behavior_results.items() %}
+
+        <div class="behavior-card">
+
+            {% if value.status %}
+                <h3>⚠ {{ key.replace("_", " ").title() }}</h3>
+            {% else %}
+                <h3>✅ {{ key.replace("_", " ").title() }}</h3>
+            {% endif %}
+
+            <p>{{ value.message }}</p>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+
+        <p>No behavior insights available.</p>
 
     {% endif %}
 

@@ -1,0 +1,16 @@
+Stock,Sector,Strategy,BuyPrice,SellPrice,Quantity,HoldingHours
+TCS,IT,Intraday,3500,3550,10,3
+INFY,IT,Swing,1400,1360,20,18
+RELIANCE,Energy,Intraday,2500,2460,15,4
+HDFC,Banking,Swing,1600,1670,12,20
+ICICIBANK,Banking,Intraday,1100,1080,25,2
+SBIN,Banking,Swing,820,860,30,24
+WIPRO,IT,Intraday,520,515,40,1
+HCLTECH,IT,Swing,1450,1500,10,30
+LT,Infrastructure,Intraday,3600,3580,8,5
+AXISBANK,Banking,Swing,1180,1230,18,15
+MARUTI,Automobile,Intraday,12500,12420,5,2
+TATAMOTORS,Automobile,Swing,980,1040,25,40
+BAJFINANCE,Finance,Intraday,7000,6950,6,6
+SUNPHARMA,Pharma,Swing,1700,1750,15,24
+ADANIPORTS,Logistics,Intraday,1450,1430,12,3

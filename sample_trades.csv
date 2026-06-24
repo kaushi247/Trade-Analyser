@@ -1,5 +1,0 @@
-Stock,Sector,Strategy,BuyPrice,SellPrice,Quantity,HoldingHours
-TCS,IT,Intraday,3500,3700,10,2
-INFY,IT,Swing,1400,1450,15,5
-RELIANCE,Energy,Intraday,2500,2450,20,8
-HDFC,Banking,Swing,1600,1700,10,3

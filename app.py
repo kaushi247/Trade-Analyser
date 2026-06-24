@@ -1,4 +1,6 @@
 from flask import Flask, render_template, request
+from behavior_analyzer import analyze_behavior
+from health_score import calculate_health_score
 import pandas as pd
 import plotly.express as px
 
@@ -28,6 +30,8 @@ def home():
     total_trades = None
     risk_rating = None
     improvement = None
+    health_score = None
+    behavior_results = {}
 
     if request.method == 'POST':
 
@@ -38,6 +42,7 @@ def home():
 
             try:
                 df = pd.read_csv(file)
+                
 
             except Exception:
 
@@ -45,6 +50,7 @@ def home():
                     "index.html",
                     chat_response="Invalid CSV uploaded."
             )
+            
             
             required_columns = [
                 "Stock",
@@ -56,20 +62,24 @@ def home():
                 "HoldingHours"
             ]
 
-        for col in required_columns:
+            for col in required_columns:
 
-            if col not in df.columns:
+                if col not in df.columns:
 
-                return render_template(
-                    "index.html",
-                    chat_response=f"Missing column: {col}"
-                )
+                    return render_template(
+                        "index.html",
+                        chat_response=f"Missing column: {col}"
+                    )
 
             # Calculate profit
             df['Profit'] = (
                 (df['SellPrice'] - df['BuyPrice'])
                 * df['Quantity']
             )
+
+            behavior_results = analyze_behavior(df)
+
+            print("Behavior Results:", behavior_results)
             total_trades = len(df)
             # Total Profit
             total_profit = df['Profit'].sum()
@@ -111,6 +121,12 @@ def home():
                     df['HoldingHours'].mean(),
                     2
             ) 
+            health_score = calculate_health_score(
+                win_rate,
+                avg_holding,
+                profit_factor
+            )
+            print("Health Score:", health_score)
             # AI Coach Logic
 
             if win_rate < 50:
@@ -316,6 +332,8 @@ def home():
         total_trades=total_trades,
         risk_rating=risk_rating,
         previous_profit=previous_profit,
+        behavior_results=behavior_results,
+        health_score=health_score,
     )
 
 if __name__ == "__main__":
