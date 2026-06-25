@@ -127,6 +127,7 @@ def home():
                 profit_factor
             )
             print("Health Score:", health_score)
+            
             # AI Coach Logic
 
             if win_rate < 50:

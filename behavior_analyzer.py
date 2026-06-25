@@ -3,10 +3,8 @@ import pandas as pd
 def analyze_behavior(df):
 
     results = {}
-
-    # -------------------------
     # OVERTRADING
-    # -------------------------
+
     total_trades = len(df)
 
     if total_trades > 15:
@@ -20,9 +18,8 @@ def analyze_behavior(df):
             "message": "Trading frequency looks healthy."
         }
 
-    # -------------------------
+
     # HOLDING LOSERS TOO LONG
-    # -------------------------
     if "Profit" in df.columns and "HoldingHours" in df.columns:
 
         winning_trades = df[df["Profit"] > 0]
@@ -50,9 +47,8 @@ def analyze_behavior(df):
                     "message": "Holding behavior looks balanced."
                 }
 
-    # -------------------------
     # CUTTING WINNERS EARLY
-    # -------------------------
+    
     if "Profit" in df.columns:
 
         avg_win = df[df["Profit"] > 0]["Profit"].mean()
